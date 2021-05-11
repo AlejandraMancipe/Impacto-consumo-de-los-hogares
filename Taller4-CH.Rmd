@@ -1,0 +1,65 @@
+---
+title: "Taller-4-ICH2008"
+author: "Alejandra Mancipe -Santiago Villamil"
+date: "11/5/2021"
+output: pdf_document
+---
+
+
+```{r}
+library(wbstats)
+library(tidyverse)
+library(readr)
+library(dplyr)
+library(stargazer)
+library(pastecs)
+library(writexl)
+
+```
+
+#descargando las bases de datos
+con el fin de evaluar el impacto en el consumo de los hogares, se van a llamar las variables a usar que pueden servir para evaluar el impacto en el consumo de los hogares. Para ello, vamos a llamar las bases de datos para las variabes dependientes:*consumo *,y las variables independientes: *ingreso nacional bruto per cápita*,*Desempleo total(% participació total en la fuerza laboral**PIB per cápita(US $ a precios constantes de 2010* para los años 2006 al 2010; es decir 2 años antes de la crisis del 2008 y dos años posteriores a la crisis. Entre estos, se seleccionaron 16 paises siendo unos desarrollados y en vias de desarrollo provenientes de los disferentes continentes del mundo.
+
+```{r}
+data <- wb_data(c("NE.CON.PRVT.PC.KD","NY.GNP.PCAP.KD","SL.UEM.TOTL.ZS","NY.GDP.PCAP.KD"), start_date = 2006, end_date = 2010)
+data <- select(data, iso3c, country, date, NE.CON.PRVT.PC.KD, NY.GNP.PCAP.KD, SL.UEM.TOTL.ZS, NY.GDP.PCAP.KD)
+data <- data %>% filter(str_detect(iso3c, "USA|COL|BOL|MEX|DEU|ROU|FRA|GBR|ZAF|GHA|NGA|
+|JPN|CHN|VNM|KOR|AUS"))
+colnames(data) <- c("iso3c", "country", "date", "consum", "income", "unemp", "gdppc")
+```
+
+
+#Asegurandonos de que las variables esten adecuadamente identificadas según su tipo 
+```{r}
+class(data$consum)
+```
+#Realizando la tabla de estadisticas descriptivas
+```{r}
+stargazer(as.data.frame(data), type = "text", 
+          out = "tabla1.tex", 
+          title = "Tabla 1 - Estadística Descriptiva",
+          digits = 1, 
+          covariate.labels = c( "AÑO","CONSUMO HOGARES", 
+                               "INGRESO PC", 
+                               "DESEMPLEO","GDP") ,
+          flip = TRUE)
+
+```
+
+```{r}
+```{r}
+ggplot(data = datos, 
+       mapping = aes(x= income)) + 
+    geom_histogram()
+ggplot(data = datos, 
+       mapping = aes(x= consumption)) + 
+    geom_histogram()
+```
+
+```
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
